@@ -1,0 +1,34 @@
+services:
+  mariadb:
+    container_name: as2
+    image: mariadb:10
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - as02
+    environment:
+      MYSQL_ROOT_PASSWORD: password123!
+      MYSQL_DATABASE: as02
+      MYSQL_USER: as02
+      MYSQL_PASSWORD: password123!
+
+  nginx:
+    container_name: mba-as02-nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
+    ports:
+      - 80:80
+    networks:
+      - as02
+
+volumes:
+  db_data: {}
+
+networks:
+  as02:
+    driver: bridge
